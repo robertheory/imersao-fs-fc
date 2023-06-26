@@ -23,12 +23,9 @@ func TestBuyAsset(t *testing.T) {
 	book := NewBook(orderChan, orderChanOut, &wg)
 	go book.Trade()
 
-	// add buy order
 	wg.Add(1)
 	order := NewOrder("1", investor, asset1, 5, 5, "SELL")
 	orderChan <- order
-
-	// add sell order
 
 	order2 := NewOrder("2", investor2, asset1, 5, 5, "BUY")
 	orderChan <- order2
@@ -98,11 +95,9 @@ func TestBuyPartialAsset(t *testing.T) {
 	go book.Trade()
 
 	wg.Add(1)
-	// investidor 2 quer comprar 5 shares
 	order2 := NewOrder("1", investor2, asset1, 5, 5.0, "BUY")
 	orderChan <- order2
 
-	// investidor 1 quer vender 3 shares
 	order := NewOrder("2", investor, asset1, 3, 5.0, "SELL")
 	orderChan <- order
 
@@ -114,7 +109,6 @@ func TestBuyPartialAsset(t *testing.T) {
 
 	wg.Wait()
 
-	// assert := assert.New(t)
 	assert.Equal("CLOSED", order.Status, "Order 1 should be closed")
 	assert.Equal(0, order.PendingShares, "Order 1 should have 0 PendingShares")
 
@@ -162,11 +156,9 @@ func TestBuyWithDifferentPrice(t *testing.T) {
 	go book.Trade()
 
 	wg.Add(1)
-	// investidor 2 quer comprar 5 shares
 	order2 := NewOrder("2", investor2, asset1, 5, 5.0, "BUY")
 	orderChan <- order2
 
-	// investidor 1 quer vender 3 shares
 	order := NewOrder("1", investor, asset1, 3, 4.0, "SELL")
 	orderChan <- order
 
@@ -197,10 +189,6 @@ func TestBuyWithDifferentPrice(t *testing.T) {
 
 	assert.Equal("CLOSED", order2.Status, "Order 2 should be CLOSED")
 	assert.Equal(0, order2.PendingShares, "Order 2 should have 0 PendingShares")
-
-	// assert.Equal(2, len(book.Transactions), "Should have 2 transactions")
-	// assert.Equal(15.0, float64(book.Transactions[0].Total), "Transaction should have price 15")
-	// assert.Equal(10.0, float64(book.Transactions[1].Total), "Transaction should have price 10")
 }
 
 func TestNoMatch(t *testing.T) {
@@ -221,11 +209,9 @@ func TestNoMatch(t *testing.T) {
 	go book.Trade()
 
 	wg.Add(0)
-	// investidor 1 quer vender 3 shares
 	order := NewOrder("1", investor, asset1, 3, 6.0, "SELL")
 	orderChan <- order
 
-	// investidor 2 quer comprar 5 shares
 	order2 := NewOrder("2", investor2, asset1, 5, 5.0, "BUY")
 	orderChan <- order2
 
